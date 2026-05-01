@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TaskFlow.Models
 {
-	public enum TaskStatus
+	public enum ProjectTaskStatus
 	{
 		Todo,
 		InProgress,
@@ -16,7 +16,7 @@ namespace TaskFlow.Models
 		public int Id { get; set; }
 		[Required]
 		public string Title { get; set; }
-		public TaskStatus Status { get; set; }
+		public ProjectTaskStatus Status { get; set; }
 		public int ProjectId { get; set; }
 		[ForeignKey("ProjectId")]
 		public Project Project { get; set; }
