@@ -72,6 +72,7 @@ namespace TaskFlow.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user!.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             string token = JwtHelper.CreateToken(claims, _configuration);

@@ -26,9 +26,10 @@ namespace TaskFlow.Controllers
         public async Task<ActionResult<List<ProjectDto>>> GetAllProjects()
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
 
             List<Project> projects = await _context.Projects
-                .Where(p => p.UserId == userId)
+                .Where(p => p.UserId == userId || isAdmin)
                 .ToListAsync();
 
             List<ProjectDto> projectDto = projects.Select(p => new ProjectDto
@@ -45,8 +46,9 @@ namespace TaskFlow.Controllers
         public async Task<ActionResult<ProjectDto>> GetProjectById(int id)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-            
-            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            bool isAdmin = User.IsInRole("Admin");
+
+            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && (p.UserId == userId || isAdmin));
             
             if(project == null)
             {
@@ -97,13 +99,14 @@ namespace TaskFlow.Controllers
         public async Task<ActionResult> UpdateProject(int id, [FromBody] ProjectDto projectDto)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && (p.UserId == userId || isAdmin));
 
             if (project == null)
             {
@@ -122,8 +125,9 @@ namespace TaskFlow.Controllers
         public async Task<ActionResult> DeleteProject(int id)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
 
-            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && p.UserId == userId);
+            Project? project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id && (p.UserId == userId || isAdmin));
 
             if (project == null)
             {
