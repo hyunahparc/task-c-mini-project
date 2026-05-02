@@ -2,10 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
 using TaskFlow.Data;
+using TaskFlow.Middlewares;
 using TaskFlow.Models;
-using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,6 +85,7 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -94,6 +96,7 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.Run();
 
