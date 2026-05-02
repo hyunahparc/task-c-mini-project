@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TaskFlow.Data;
 using TaskFlow.Models;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +60,35 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Swagger
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Entrez votre token JWT"
+    });
+
+    options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+    {
+        { new OpenApiSecuritySchemeReference("Bearer"), new List<string>() }
+    });
+});
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseCors("AllowFrontend");
 app.UseAuthentication();

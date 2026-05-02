@@ -22,6 +22,10 @@ namespace TaskFlow.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves all projects for the authenticated project owner and admin.
+        /// </summary>
+        /// <returns>List of project DTOs</returns>
         [HttpGet]
         public async Task<ActionResult<List<ProjectDto>>> GetAllProjects()
         {
@@ -42,6 +46,11 @@ namespace TaskFlow.Controllers
             return Ok(projectDto);
         }
 
+        /// <summary>
+        /// Retrieves a project by its ID for the authenticated project owner and admin.
+        /// </summary>
+        /// <param name="id">Projet ID</param>
+        /// <returns>Project details</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetProjectById(int id)
         {
@@ -65,6 +74,11 @@ namespace TaskFlow.Controllers
             return Ok(projectDto);
         }
 
+        /// <summary>
+        /// Creates a new project for the authenticated user and admin.
+        /// </summary>
+        /// <param name="projectDto">Project data</param>
+        /// <returns>Created project</returns>
         [HttpPost]
         public async Task<ActionResult<ProjectDto>> CreateProject([FromBody] ProjectDto projectDto)
         {
@@ -95,6 +109,12 @@ namespace TaskFlow.Controllers
             return CreatedAtAction(nameof(GetProjectById), new { id = project.Id }, result);
         }
 
+        /// <summary>
+        /// Updates an existing project for the authenticated project owner and admin.
+        /// </summary>
+        /// <param name="id">Projet Id</param>
+        /// <param name="projectDto">Update project data</param>
+        /// <returns>No content if successful</returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProject(int id, [FromBody] ProjectDto projectDto)
         {
@@ -121,6 +141,11 @@ namespace TaskFlow.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a project for the authenticated project owner and admin.
+        /// </summary>
+        /// <param name="id">Project ID</param>
+        /// <returns>No content if successful</returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProject(int id)
         {

@@ -22,6 +22,10 @@ namespace TaskFlow.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Retrieves all tasks for the authenticated task owner and admin.
+        /// </summary>
+        /// <returns>List of task DTOs</returns>
         [HttpGet]
         public async Task<ActionResult<List<ProjectTaskDto>>> GetAllTasks()
         {
@@ -42,6 +46,11 @@ namespace TaskFlow.Controllers
             return Ok(projectTaskDto);
         }
 
+        /// <summary>
+        /// Retrieves a task by its ID for the authenticated task owner and admin.
+        /// </summary>
+        /// <param name="id">Task ID</param>
+        /// <returns>Task details</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectTaskDto>> GetTaskById(int id)
         {
@@ -70,6 +79,12 @@ namespace TaskFlow.Controllers
             return Ok(projectTaskDto);
         }
 
+        /// <summary>
+        /// Creates a new task under a project.
+        /// Only the project owner or admin can create tasks.
+        /// </summary>
+        /// <param name="projectTaskDto">Task data</param>
+        /// <returns>Created task</returns>
         [HttpPost]
         public async Task<ActionResult<ProjectTaskDto>> CreateTask([FromBody] ProjectTaskDto projectTaskDto)
         {
@@ -116,6 +131,13 @@ namespace TaskFlow.Controllers
             return CreatedAtAction(nameof(GetTaskById), new { id = projectTask.Id }, result);
         }
 
+        /// <summary>
+        /// Updates an existing task.
+        /// Only the project/task owner or admin can update it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="projectTaskDto"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProjectTask(int id, [FromBody] ProjectTaskDto projectTaskDto)
         {
@@ -149,6 +171,12 @@ namespace TaskFlow.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a task.
+        /// Only the project/task owner or admin can delete it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProjectTask(int id)
         {
