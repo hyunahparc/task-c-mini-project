@@ -13,7 +13,7 @@ using TaskFlow.Models;
 namespace TaskFlow.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("api/users")]
     public class AuthController : ControllerBase
     {
         private readonly ApiContext _context;
