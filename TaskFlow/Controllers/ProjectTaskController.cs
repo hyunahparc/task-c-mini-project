@@ -48,11 +48,16 @@ namespace TaskFlow.Controllers
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
             bool isAdmin = User.IsInRole("Admin");
 
-            ProjectTask? projectTask = await _context.ProjectTasks.FirstOrDefaultAsync(t => t.Id == id && (t.Project.UserId == userId || isAdmin));
+            ProjectTask? projectTask = await _context.ProjectTasks.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
 
             if (projectTask == null)
             {
                 return NotFound("Task not found.");
+            }
+
+            if (!isAdmin && projectTask.Project.UserId != userId)
+            {
+                return Forbid();
             }
 
             ProjectTaskDto projectTaskDto = new ProjectTaskDto
