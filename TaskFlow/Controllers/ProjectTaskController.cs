@@ -110,5 +110,62 @@ namespace TaskFlow.Controllers
 
             return CreatedAtAction(nameof(GetTaskById), new { id = projectTask.Id }, result);
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateProjectTask(int id, [FromBody] ProjectTaskDto projectTaskDto)
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var projectTask = await _context.ProjectTasks.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+
+            if (projectTask == null)
+            {
+                return NotFound("Task not found.");
+            }
+
+            if (!isAdmin && projectTask.Project.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            projectTask.Title = projectTaskDto.Title;
+            projectTask.Status = projectTaskDto.Status;
+            projectTask.DueDate = projectTaskDto.DueDate;
+
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProjectTask(int id)
+        {
+            int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
+
+            ProjectTask? projectTask = await _context.ProjectTasks.Include(t => t.Project).FirstOrDefaultAsync(t => t.Id == id);
+
+            if (projectTask == null)
+            {
+                return NotFound("Task not found.");
+            }
+
+            if (!isAdmin && projectTask.Project.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            _context.ProjectTasks.Remove(projectTask);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
