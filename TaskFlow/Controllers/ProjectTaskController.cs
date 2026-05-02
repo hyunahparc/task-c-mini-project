@@ -69,17 +69,23 @@ namespace TaskFlow.Controllers
         public async Task<ActionResult<ProjectTaskDto>> CreateTask([FromBody] ProjectTaskDto projectTaskDto)
         {
             int userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            bool isAdmin = User.IsInRole("Admin");
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectTaskDto.ProjectId && p.UserId == userId);
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectTaskDto.ProjectId);
 
             if (project == null)
             {
                 return NotFound("Project not found.");
+            }
+
+            if (!isAdmin && project.Id != userId)
+            {
+                return Forbid();
             }
 
             ProjectTask projectTask = new ProjectTask
