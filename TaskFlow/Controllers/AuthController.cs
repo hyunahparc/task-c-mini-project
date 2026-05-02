@@ -26,6 +26,11 @@ namespace TaskFlow.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Register a new user.
+        /// </summary>
+        /// <param name="registerDto">User registration data (email, name, password)</param>
+        /// <returns>Success message if registration is successful</returns>
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] RegisterDto registerDto)
         {
@@ -50,6 +55,11 @@ namespace TaskFlow.Controllers
             return Ok("User registered successfully");
         }
 
+        /// <summary>
+        /// Authenticates a user and returns a JWT token.
+        /// </summary>
+        /// <param name="loginDto">User login credentials (email, password)</param>
+        /// <returns>JWT token if authentication is successful</returns>
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] LoginDto loginDto)
         {
