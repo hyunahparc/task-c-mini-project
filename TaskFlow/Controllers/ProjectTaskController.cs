@@ -40,7 +40,9 @@ namespace TaskFlow.Controllers
             {
                 Id = t.Id,
                 Title = t.Title,
-                Status = t.Status
+                Status = t.Status,
+                DueDate = t.DueDate,
+                ProjectId = t.ProjectId
             }).ToList();
 
             return Ok(projectTaskDto);
@@ -73,7 +75,9 @@ namespace TaskFlow.Controllers
             {
                 Id = projectTask.Id,
                 Title = projectTask.Title,
-                Status = projectTask.Status
+                Status = projectTask.Status,
+                DueDate = projectTask.DueDate,
+                ProjectId = projectTask.ProjectId
             };
 
             return Ok(projectTaskDto);
@@ -103,7 +107,7 @@ namespace TaskFlow.Controllers
                 return NotFound("Project not found.");
             }
 
-            if (!isAdmin && project.Id != userId)
+            if (!isAdmin && project.UserId != userId)
             {
                 return Forbid();
             }
